@@ -12,13 +12,13 @@ Projeto Integrador  turma de Meio Ambiente DH - ☀️ Predisão de geração fo
 
 > "“Ao observar o lado de OPEX dessas plantas, as plataformas de software e algoritmos de inteligência artificial trazem também um ganho de eficiência de operação e manutenção. Diagnósticos de todos os painéis da usina, manutenção preventiva e corretiva, tudo isso se reflete numa redução de custo operacional e um ganho de geração”, assinalou Guerra."[aqui](https://www.itpindustrial.com.br/blog/artigo/energia-solar-inteligencia-artificial-sera-fator-diferencial-na-competitividade-de-projetos)
 
-- [ ] Datasets:
+- [ ] Captação dos dados:
     - [ ] JSON - como foi adquirido os dados; ✅
     - [ ] Estações escolhidas - quais e porque?
-    - [ ] Salvar dataframes usadas (de estações individuais e um dataset com todas)
-    - [ ] df com captação horária 
+    - [ ] Salvar dataframes usadas (de estações individuais e um dataset com todas) 
+    - [ ] df com captação horária ✅
  
-- [ ] Limpeza de dados e tratamento de nulos;
+- [ ] Limpeza de dados e tratamento de nulos; ✅
     
 - [ ] Visualizações importantes:
         
