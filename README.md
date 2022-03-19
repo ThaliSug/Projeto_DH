@@ -20,7 +20,7 @@ Projeto Integrador  turma de Meio Ambiente DH - ☀️ Predisão de geração fo
  
 - [ ] Limpeza de dados e tratamento de nulos; ✅
     
-- [ ] Visualizações importantes:
+- [ ] EDA - Visualizações importantes:
         
     - [ ] funções de gráficos 
 
