@@ -14,18 +14,17 @@ warnings.filterwarnings('ignore')
 def coleta_dados_estacao(tipo = 'T', cod=None):
     '''
     Usando o site https://mapas.inmet.gov.br/#  para pesquisar as estações do INMET, sendo:
-    ex: 
-    
+    ------------------------------------------------------------------------------------------
     prâmetros para a função:
-    tipo:
+    * tipo:
     T - Automáticas
     M - Manuais
     ex: default--> tipo ='T'
-    e código da estação.
     
+    * código da estação.
     ex: [A701] SAO PAULO - MIRANTE - SP
         cod='A701'
-    
+    --------------------------------------------------------------------------------------------
     a função **retorna** um dataset com informações da estação, sendo:
     Nome, o código da estação, Latitude, Longitude, situação que se encontra (pane ou operante) 
     e Data de início de operação
@@ -45,7 +44,7 @@ def coleta_dados_estacao(tipo = 'T', cod=None):
     
     return df[['DC_NOME','CD_ESTACAO','VL_LATITUDE','VL_ALTITUDE','VL_LONGITUDE','CD_SITUACAO','DT_INICIO_OPERACAO']]
 
-def coleta_dado(data_inicial = '2020-01-01',data_final = '2021-01-01',cod = 'A701'):
+def coleta_dado(data_inicial = '2020-01-01',data_final = '2021-01-01',cod = 'A701',salva=0):
     '''
     Parâmetros: 
     * data_inicial = no formato %Y-%m-%d
@@ -58,14 +57,22 @@ def coleta_dado(data_inicial = '2020-01-01',data_final = '2021-01-01',cod = 'A70
     ---------------------------------------
     Retorna um dataframe com todos os dados captados de 1 em 1 hora
     da  estação escolhida, pelo período escolhido.
-    As colunas são condforme descrito o API:
+    As colunas são conforme descrito o API:
     
     https://portal.inmet.gov.br/manual/manual-de-uso-da-api-esta%C3%A7%C3%B5es
+    
+    ***Atenção! se quiser salvar o dataframe, deve:
+    - ter uma pasta com o nome Dados, no mesmo diretório do notebook.
+    - setar parâmetro da função: salva=1
     
     '''
     url = requests.get(f'https://apitempo.inmet.gov.br/estacao/{data_inicial}/{data_final}/{cod}').json()
     df = pd.read_json(json.dumps(url))
-    df.to_csv('Dados/data_raw.csv',sep=';',index=False)
+    
+    if salva == 1:
+        df.to_csv('Dados/data_raw.csv',sep=';',index=False)
+    else:
+        print('Dataframe não salvo!')
     return df
 
 
@@ -137,19 +144,38 @@ def p_null(df):
     print('The columns with the most % nulls are:')
     print(((df.isnull().sum()/df.shape[0])*100).sort_values(ascending = False))
 
-def treat_null_RAD(df):
+def treat_null_RAD(df,salva = 0):
+    '''
+    Faz os tratamentos das  colunas, primeiramente com o método do ffill, 
+    e especialmente na coluna de irradição cria uma outra coluna 'RAD', que além 
+    do tratamento com o  ffill ele zera os valores entre as 19 e as 5 da manhã,
+    pois pode aparecer valores negativos.
+    e por último se, ainda na coluna RAD, ainda houver valores negativos, transforma em zero.
+    --------------------------------------------------------------------------------------
+    parâmetro - dataframe a ser tratado
+    -------------------------------------------------------------------------------------
+    retorna - dataframe com os tratamentos explicados.
+    -------------------------------------------------------------------------------------
+    OBS: Se quiser salvar o dataset depois de tratado, seta parâmetro salva=1
+    default para não salvar. 
+    '''
     # Fazendo o tratamento do restante dos nulls com o method=ffill
     df.fillna(method='ffill',inplace=True)
+    
+    # Tratamento somente na coluna de irradiação - e criação de 'RAD'-coluna de radiação tratada
+    
     condiction = df.loc[:,'HORA']>=19.0                   # condição se o horário é mais que 19h
     df.loc[:,'RAD']  = np.where(condiction, 0.0 ,df.loc[:,'RAD_GLO'])
     condiction2 = df.loc[:,'HORA'] <= 5.0                 # condição se o horário é menos que 5h
     df['RAD']  = np.where(condiction2, 0.0 ,df['RAD'])
     df['RAD']  = df['RAD'].apply(lambda x: 0.0 if x<0 else x) # ou se negativo é igual a zero
-    #Separa agora somente os que tem radiação >0 pra não afetar a média se trabalhar com dia
-    #df = df.loc[df['RAD']>0]
     
-    # salva arquivo tratado
-    df.to_csv('Dados/data_tratado.csv',sep=';',index=False)
+    if salva == 1:
+        # salva arquivo tratado
+        df.to_csv('Dados/data_tratado.csv',sep=';',index=False)
+    else:
+        print('Dataframe não salvo!')
+        
     return p_null(df)
   
 def is_constant(df):
