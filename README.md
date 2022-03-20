@@ -1,5 +1,5 @@
 # Projeto_Integrador_DH
-Projeto Integrador  turma de Meio Ambiente DH - ☀️ Predisão de geração fotovoltaíca a partir de dados meteorológicos.:sunny:
+Projeto Integrador  turma de Meio Ambiente DH - ☀️ Predição de geração fotovoltaíca a partir de dados meteorológicos.:sunny:
 
 
 ### Organizando pasta projeto: 💻
